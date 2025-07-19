@@ -7,24 +7,29 @@ import (
 
 func main() {
 	countNum := 10
-	ch := make(chan int)
-	go createSliceOfRandomElements(countNum, ch)
-	for i := 0; i < countNum; i++ {
-		fmt.Printf("%d ", <-ch)
+	ch1 := make(chan int)
+	ch2 := make(chan int)
+	go createSliceOfRandomElements(countNum, ch1)
+	go squareNumber(ch1, ch2)
+	for range countNum {
+		fmt.Printf("%d ", <-ch2)
 	}
 }
 
-func createSliceOfRandomElements(count int, ch chan int) {
-	sliceOfRandomElements := make([]int, 10)
-	for i := 0; i < count; i++ {
+func createSliceOfRandomElements(count int, ch1 chan int) {
+	defer close(ch1)
+	sliceOfRandomElements := make([]int, count)
+	for i := range count {
 		sliceOfRandomElements[i] = rand.Intn(101)
 	}
 	for _, val := range sliceOfRandomElements {
-		go squareNumber(val, ch)
+		ch1 <- val
 	}
 }
 
-func squareNumber(val int, ch chan int) {
-	res := val * val
-	ch <- res
+func squareNumber(ch1 chan int, ch2 chan int) {
+	defer close(ch2)
+	for val := range ch1 {
+		ch2 <- val * val
+	}
 }
