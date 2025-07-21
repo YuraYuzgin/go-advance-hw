@@ -15,6 +15,6 @@ func NewRandomNumberHandler(router *http.ServeMux) {
 
 func (hanler *RandomNumberHandler) CreateRandomNum() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		w.Write([]byte(fmt.Sprint(rand.Intn(6))))
+		w.Write([]byte(fmt.Sprint(rand.Intn(7))))
 	}
 }
