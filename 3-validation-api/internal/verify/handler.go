@@ -2,6 +2,7 @@ package verify
 
 import (
 	"crypto/rand"
+	"emailVerify/3-validation-api/configs"
 	"emailVerify/3-validation-api/pkg/req"
 	"emailVerify/3-validation-api/pkg/res"
 	"encoding/hex"
@@ -15,10 +16,18 @@ import (
 	"github.com/jordan-wright/email"
 )
 
-type VerifyHandler struct{}
+type VerifyHandlerDeps struct {
+	*configs.Config
+}
 
-func NewVerifyHandler(router *http.ServeMux) {
-	handler := VerifyHandler{}
+type VerifyHandler struct {
+	*configs.Config
+}
+
+func NewVerifyHandler(router *http.ServeMux, deps VerifyHandlerDeps) {
+	handler := &VerifyHandler{
+		Config: deps.Config,
+	}
 	router.HandleFunc("POST /send", handler.Send())
 	router.HandleFunc("GET /verify/{hash}", handler.Verify())
 }
@@ -60,7 +69,7 @@ func (handler *VerifyHandler) Send() http.HandlerFunc {
 		e.Subject = "Email Verification"
 		e.Text = []byte("Please click the following link to verify your email: http://localhost:8081/verify/" + hash)
 		e.HTML = []byte("<p>Please click the following link to verify your email: <a href=\"http://localhost:8081/verify/" + hash + "\">Verify Email</a></p>")
-		err = e.Send("smtp.gmail.com:587", smtp.PlainAuth("", "yurayuzgin@gmail.com", "wizd hpeb grcw ussx", "smtp.gmail.com"))
+		err = e.Send("smtp.gmail.com:587", smtp.PlainAuth("", handler.Auth.Email, handler.Auth.Password, handler.Auth.Address))
 		if err != nil {
 			log.Printf("Failed to send email: %v", err)
 			http.Error(w, "Failed to send verification email", http.StatusInternalServerError)
