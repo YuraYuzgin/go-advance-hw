@@ -75,6 +75,7 @@ func (handler *VerifyHandler) Send() http.HandlerFunc {
 			http.Error(w, "Failed to send verification email", http.StatusInternalServerError)
 			return
 		}
+		res.Json(w, true, 200)
 	}
 }
 func (handler *VerifyHandler) Verify() http.HandlerFunc {
