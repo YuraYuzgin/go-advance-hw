@@ -28,6 +28,7 @@ func (handler *VerifyHandler) Send() http.HandlerFunc {
 		fmt.Println("Send")
 		payload, err := req.HandleBody[Request](&w, r)
 		if err != nil {
+			fmt.Println(err.Error())
 			return
 		}
 
@@ -42,13 +43,15 @@ func (handler *VerifyHandler) Send() http.HandlerFunc {
 		// Преобразуем структуру в JSON
 		jsonData, err := json.MarshalIndent(saveHush, "", "  ")
 		if err != nil {
-			panic(err)
+			fmt.Println(err.Error())
+			return
 		}
 
 		// Сохраняем JSON в файл
 		err = os.WriteFile("hash.json", jsonData, 0644)
 		if err != nil {
-			panic(err)
+			fmt.Println(err.Error())
+			return
 		}
 
 		e := email.NewEmail()
@@ -72,16 +75,17 @@ func (handler *VerifyHandler) Verify() http.HandlerFunc {
 
 		fileContent, err := os.ReadFile("hash.json")
 		if err != nil {
-			panic(err)
+			fmt.Println(err.Error())
+			return
 		}
 		var referenceHash Hash
 		err = json.Unmarshal(fileContent, &referenceHash)
 		if err != nil {
-			panic(err)
+			fmt.Println(err.Error())
+			return
 		}
 		fmt.Println(referenceHash)
 		if referenceHash.Hash != hash {
-			os.Remove("hash.json")
 			res.Json(w, false, 400)
 		} else {
 			os.Remove("hash.json")
