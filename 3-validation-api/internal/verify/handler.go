@@ -3,6 +3,7 @@ package verify
 import (
 	"crypto/rand"
 	"emailVerify/3-validation-api/pkg/req"
+	"emailVerify/3-validation-api/pkg/res"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -80,7 +81,11 @@ func (handler *VerifyHandler) Verify() http.HandlerFunc {
 		}
 		fmt.Println(referenceHash)
 		if referenceHash.Hash != hash {
-			os.Remove("hash.go")
+			os.Remove("hash.json")
+			res.Json(w, false, 400)
+		} else {
+			os.Remove("hash.json")
+			res.Json(w, true, 200)
 		}
 	}
 }
