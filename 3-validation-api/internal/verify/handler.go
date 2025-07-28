@@ -97,9 +97,11 @@ func (handler *VerifyHandler) Verify() http.HandlerFunc {
 		fmt.Println(referenceHash)
 		if referenceHash.Hash != hash {
 			res.Json(w, false, 400)
+			return
 		} else {
 			os.Remove("hash.json")
 			res.Json(w, true, 200)
+			return
 		}
 	}
 }
