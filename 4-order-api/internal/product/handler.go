@@ -102,6 +102,7 @@ func (handler *ProductHandler) GetById() http.HandlerFunc {
 		product, err := handler.ProductRepository.GetById(uint(id))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
+			return
 		}
 		res.Json(w, product, 200)
 	}
@@ -112,6 +113,7 @@ func (handler *ProductHandler) GetAll() http.HandlerFunc {
 		products, err := handler.ProductRepository.GetAll()
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		res.Json(w, products, 200)
 	}
