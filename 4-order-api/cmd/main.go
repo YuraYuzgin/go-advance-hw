@@ -3,6 +3,7 @@ package main
 import (
 	"cart-api/configs"
 	"cart-api/internal/auth"
+	"cart-api/internal/product"
 	"cart-api/pkg/db"
 	"fmt"
 	"net/http"
@@ -10,10 +11,18 @@ import (
 
 func main() {
 	conf := configs.LoadConfig()
-	_ = db.NewDb(conf)
+	db := db.NewDb(conf)
 	router := http.NewServeMux()
+
+	// Repositories
+	productRepository := product.NewProductRepository(db)
+
+	// Handler
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config: conf,
+	})
+	product.NewProductHandler(router, product.ProductHandlerDeps{
+		ProductRepository: productRepository,
 	})
 
 	server := http.Server{
