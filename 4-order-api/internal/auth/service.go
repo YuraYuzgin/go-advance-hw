@@ -26,7 +26,7 @@ func (service *AuthService) AuthByPhone(phone string) (*user.User, error) {
 	user := &user.User{
 		Phone:     phone,
 		SessionId: sessionId,
-		Code:      "1234",
+		Code:      1234,
 	}
 	_, err := service.UserRepository.Create(user)
 	if err != nil {
@@ -45,7 +45,7 @@ func RandStringRunes(n int) string {
 	return string(b)
 }
 
-func (service *AuthService) CodeVerification(sessionId, code string) (string, error) {
+func (service *AuthService) CodeVerification(sessionId string, code int) (string, error) {
 	existedUser, _ := service.UserRepository.FindBySessionId(sessionId, code)
 	if existedUser == nil {
 		return "", errors.New(ErrWrongCredentials)

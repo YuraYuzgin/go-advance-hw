@@ -3,7 +3,6 @@ package user
 import (
 	"cart-api/pkg/db"
 	"errors"
-	"fmt"
 )
 
 type UserRepository struct {
@@ -33,10 +32,9 @@ func (repo *UserRepository) Create(user *User) (*User, error) {
 	return user, nil
 }
 
-func (repo *UserRepository) FindBySessionId(sessionId, code string) (*User, error) {
+func (repo *UserRepository) FindBySessionId(sessionId string, code int) (*User, error) {
 	var user User
 	result := repo.database.DB.First(&user, "session_id = ?", sessionId)
-	fmt.Println(result)
 	if result.Error != nil {
 		return nil, result.Error
 	}

@@ -10,7 +10,7 @@ type AuthResponse struct {
 
 type CodeVerificationRequest struct {
 	SessionId string `json:"sessionId" validate:"required"`
-	Code      string `json:"code" validate:"required"`
+	Code      int    `json:"code" validate:"required"`
 }
 
 type CodeVerificationResponse struct {
