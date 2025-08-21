@@ -4,26 +4,29 @@ import (
 	"cart-api/configs"
 	"cart-api/internal/auth"
 	"cart-api/internal/product"
+	"cart-api/internal/user"
 	"cart-api/pkg/db"
 	"cart-api/pkg/middleware"
 	"fmt"
 	"net/http"
-
-	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	conf := configs.LoadConfig()
 	db := db.NewDb(conf)
 	router := http.NewServeMux()
-	logrus.SetFormatter(&logrus.JSONFormatter{})
 
 	// Repositories
 	productRepository := product.NewProductRepository(db)
+	userRepository := user.NewUserRepository(db)
+
+	// Services
+	authService := auth.NewAuthService(userRepository)
 
 	// Handler
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
-		Config: conf,
+		Config:      conf,
+		AuthService: authService,
 	})
 
 	// Middlewares

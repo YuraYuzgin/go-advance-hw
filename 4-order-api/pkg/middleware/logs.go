@@ -13,6 +13,8 @@ func Logging(next http.Handler) http.Handler {
 			StatusCode:     http.StatusOK,
 		}
 		next.ServeHTTP(wrapper, r)
+
+		logrus.SetFormatter(&logrus.JSONFormatter{})
 		logrus.WithFields(logrus.Fields{
 			"path":       r.URL.Path,
 			"StatusCode": wrapper.StatusCode,
