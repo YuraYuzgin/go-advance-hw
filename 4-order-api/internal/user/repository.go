@@ -2,7 +2,6 @@ package user
 
 import (
 	"cart-api/pkg/db"
-	"errors"
 )
 
 type UserRepository struct {
@@ -38,9 +37,5 @@ func (repo *UserRepository) FindBySessionId(sessionId string, code int) (*User, 
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	if code != user.Code {
-		return nil, errors.New("wrong code")
-	}
-
 	return &user, nil
 }

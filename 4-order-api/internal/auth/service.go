@@ -4,7 +4,6 @@ import (
 	"cart-api/internal/user"
 	"errors"
 	"math/rand"
-	// "golang.org/x/crypto/bcrypt"
 )
 
 type AuthService struct {
@@ -47,21 +46,11 @@ func RandStringRunes(n int) string {
 
 func (service *AuthService) CodeVerification(sessionId string, code int) (string, error) {
 	existedUser, _ := service.UserRepository.FindBySessionId(sessionId, code)
+	if code != existedUser.Code {
+		return "", errors.New("wrong code")
+	}
 	if existedUser == nil {
 		return "", errors.New(ErrWrongCredentials)
 	}
-	// hashedSessionId, err := bcrypt.GenerateFromPassword([]byte(sessionId), bcrypt.DefaultCost)
-	// if err != nil {
-	// 	return "", err
-	// }
-	// user := &user.User{
-	// 	Phone:     existedUser.Phone,
-	// 	SessionId: string(hashedSessionId),
-	// 	Code:      code,
-	// }
-	// _, err = service.UserRepository.Create(user)
-	// if err != nil {
-	// 	return "", err
-	// }
 	return existedUser.Phone, nil
 }

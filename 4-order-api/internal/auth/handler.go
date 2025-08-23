@@ -51,7 +51,7 @@ func (handler *AuthHandler) CodeVerification() http.HandlerFunc {
 		if err != nil {
 			return
 		}
-		phone, err := handler.AuthService.CodeVerification(body.SessionId, body.Code)
+		phone, err := handler.AuthService.CodeVerification(body.SessionId, int(body.Code))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
