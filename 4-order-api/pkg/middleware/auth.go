@@ -17,7 +17,7 @@ func writeUnauthed(w http.ResponseWriter) {
 	w.Write([]byte(http.StatusText(http.StatusUnauthorized)))
 }
 
-func isAuth(next http.Handler, config *configs.Config) http.Handler {
+func IsAuth(next http.Handler, config *configs.Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if !strings.HasPrefix(authHeader, "Bearer ") {

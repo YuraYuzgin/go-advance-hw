@@ -28,13 +28,13 @@ func main() {
 		Config:      conf,
 		AuthService: authService,
 	})
+	product.NewProductHandler(router, product.ProductHandlerDeps{
+		ProductRepository: productRepository,
+		Config:            conf,
+	})
 
 	// Middlewares
 	stack := middleware.Chain(middleware.Logging)
-
-	product.NewProductHandler(router, product.ProductHandlerDeps{
-		ProductRepository: productRepository,
-	})
 
 	server := http.Server{
 		Addr:    ":8081",

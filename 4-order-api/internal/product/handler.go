@@ -1,6 +1,8 @@
 package product
 
 import (
+	"cart-api/configs"
+	"cart-api/pkg/middleware"
 	"cart-api/pkg/req"
 	"cart-api/pkg/res"
 	"net/http"
@@ -11,6 +13,7 @@ import (
 
 type ProductHandlerDeps struct {
 	ProductRepository *ProductRepository
+	Config            *configs.Config
 }
 
 type ProductHandler struct {
@@ -21,8 +24,11 @@ func NewProductHandler(router *http.ServeMux, deps ProductHandlerDeps) {
 	handler := &ProductHandler{
 		ProductRepository: deps.ProductRepository,
 	}
-	router.HandleFunc("POST /product", handler.Create())
-	router.HandleFunc("PATCH /product/{id}", handler.Update())
+	router.Handle("POST /product", middleware.IsAuth(handler.Create(), deps.Config))
+	router.Handle("PATCH /product/{id}", middleware.IsAuth(handler.Update(), deps.Config))
+	router.Handle("DELETE /product/{id}", middleware.IsAuth(handler.Delete(), deps.Config))
+	// router.HandleFunc("POST /product", handler.Create())
+	//router.HandleFunc("PATCH /product/{id}", handler.Update())
 	router.HandleFunc("DELETE /product/{id}", handler.Delete())
 	router.HandleFunc("GET /product/{id}", handler.GetById())
 	router.HandleFunc("GET /products/", handler.GetAll())
