@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cart-api/internal/order"
 	"cart-api/internal/product"
 	"cart-api/internal/user"
 	"os"
@@ -19,5 +20,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&product.Product{}, &user.User{})
+	db.AutoMigrate(&product.Product{}, &user.User{}, &order.Order{})
 }

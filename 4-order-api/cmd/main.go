@@ -3,6 +3,7 @@ package main
 import (
 	"cart-api/configs"
 	"cart-api/internal/auth"
+	"cart-api/internal/order"
 	"cart-api/internal/product"
 	"cart-api/internal/user"
 	"cart-api/pkg/db"
@@ -19,6 +20,7 @@ func main() {
 	// Repositories
 	productRepository := product.NewProductRepository(db)
 	userRepository := user.NewUserRepository(db)
+	orderRepository := order.NewOrderRepository(db)
 
 	// Services
 	authService := auth.NewAuthService(userRepository)
@@ -31,6 +33,10 @@ func main() {
 	product.NewProductHandler(router, product.ProductHandlerDeps{
 		ProductRepository: productRepository,
 		Config:            conf,
+	})
+	order.NewOrderHandler(router, order.OrderHandlerDeps{
+		OrderRepository: orderRepository,
+		Config:          conf,
 	})
 
 	// Middlewares
