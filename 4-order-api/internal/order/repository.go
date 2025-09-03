@@ -48,7 +48,9 @@ func (repo *OrderRepository) GetProductsById(ids []uint) (*[]product.Product, er
 
 func (repo *OrderRepository) GetById(id uint) (*Order, error) {
 	var order Order
-	result := repo.Database.DB.First(&order, id)
+	result := repo.Database.DB.
+		Preload("Products").
+		First(&order, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -58,7 +60,7 @@ func (repo *OrderRepository) GetById(id uint) (*Order, error) {
 func (repo *OrderRepository) GetOrdersByUserId(id uint) (*[]Order, error) {
 	var orders []Order
 	result := repo.Database.DB.
-		Table("orders").
+		Preload("Products").
 		Where("user_id = ?", id).
 		Find(&orders)
 	if result.Error != nil {

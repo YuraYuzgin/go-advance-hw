@@ -36,6 +36,10 @@ func (handler *OrderHandler) Create() http.HandlerFunc {
 		if err != nil {
 			return
 		}
+		if len(body.Products) == 0 {
+			http.Error(w, "Invalid products", http.StatusBadRequest)
+			return
+		}
 		phone := r.Context().Value(middleware.ContextPhoneKey).(string)
 		user, err := handler.OrderRepository.GetUserIdByPhone(phone)
 		if err != nil {
@@ -97,10 +101,15 @@ func (handler *OrderHandler) GetAllByUserId() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		order, err := handler.OrderRepository.GetOrdersByUserId(user.ID)
+		orders, err := handler.OrderRepository.GetOrdersByUserId(user.ID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
+			return
 		}
-		res.Json(w, order, 200)
+		if len(*orders) == 0 {
+			res.Json(w, nil, 200)
+			return
+		}
+		res.Json(w, orders, 200)
 	}
 }
