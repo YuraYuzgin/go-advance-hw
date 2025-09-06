@@ -47,7 +47,8 @@ func RemoveData(db *gorm.DB) {
 		Where("phone = ?", "89331112233").
 		Delete(&user.User{})
 	db.Unscoped().
-		Where("name = ?", "TV")
+		Where("name = ?", "TV").
+		Delete(&product.Product{})
 }
 
 func TestCreateOrderSuccess(t *testing.T) {
